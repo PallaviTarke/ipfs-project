@@ -14,8 +14,8 @@ const upload = multer({ dest: 'uploads/' });
 // Connect to local IPFS daemon
 const ipfs = create({ url: 'http://127.0.0.1:5001' });
 
-// Shared NFS-mounted path
-const cidFilePath = '/mnt/ipfs_shared/ipfs_cids.txt';
+// Shared Azure Files path
+const cidFilePath = '/mnt/ipfs_share/ipfs_cids.txt';
 
 app.post('/upload', upload.single('file'), async (req, res) => {
   try {
@@ -27,7 +27,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     const cid = result.cid.toString();
     const originalFileName = req.file.originalname;
 
-    // Append filename and CID to shared NFS log file
+    // Append filename and CID to shared Azure Files log file
     fs.appendFileSync(cidFilePath, `${originalFileName}: ${cid}\n`);
 
     // Clean up temp upload
@@ -54,5 +54,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`App running at http://localhost:${PORT}`);
 });
-
-// Ensure the shared NFS-mounted path exists
